@@ -99,7 +99,7 @@
                 <option>
                     <name>GBECoreSlave</name>
                     <version>31</version>
-                    <state>38</state>
+                    <state>39</state>
                 </option>
                 <option>
                     <name>OGUseCmsis</name>
@@ -339,7 +339,8 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
-                    <state></state>
+                    <state>$WS_DIR$\</state>
+                    <state>$PROJ_DIR$\</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -748,7 +749,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\stm32f411xE.icf</state>
+                    <state>$WS_DIR$\Board\stm32f411xE.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -2109,10 +2110,13 @@
             </data>
         </settings>
     </configuration>
+    <group>
+        <name>Board</name>
+        <file>
+            <name>$PROJ_DIR$\..\Board\startup.cpp</name>
+        </file>
+    </group>
     <file>
         <name>$PROJ_DIR$\main.cpp</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\startup.cpp</name>
     </file>
 </project>
