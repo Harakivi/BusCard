@@ -1,0 +1,87 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "BusCard",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "BusCard.elf::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-BusCard.elf-Debug-44fb633c69bbbd3917c5.json",
+					"name" : "BusCard.elf",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "CMSIS_LIBRARY::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-CMSIS_LIBRARY-Debug-a87bf98e646df06bf867.json",
+					"name" : "CMSIS_LIBRARY",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "STM_HAL_LIBRARY::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-STM_HAL_LIBRARY-Debug-eeda8e79ae7552cf43ee.json",
+					"name" : "STM_HAL_LIBRARY",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "STM_USB_LIBRARY::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-STM_USB_LIBRARY-Debug-9eb810d99ec7575de3f8.json",
+					"name" : "STM_USB_LIBRARY",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/harakivi/GIT/BusCard/build",
+		"source" : "/home/harakivi/GIT/BusCard"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

@@ -1,0 +1,6 @@
+/home/harakivi/GIT/BusCard/build/CMakeFiles/CMSIS_LIBRARY.dir
+/home/harakivi/GIT/BusCard/build/CMakeFiles/STM_HAL_LIBRARY.dir
+/home/harakivi/GIT/BusCard/build/CMakeFiles/STM_USB_LIBRARY.dir
+/home/harakivi/GIT/BusCard/build/CMakeFiles/BusCard.elf.dir
+/home/harakivi/GIT/BusCard/build/CMakeFiles/edit_cache.dir
+/home/harakivi/GIT/BusCard/build/CMakeFiles/rebuild_cache.dir

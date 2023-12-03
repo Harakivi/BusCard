@@ -1,0 +1,36 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"cwd": "${workspaceRoot}",
+				"name": "ST-Link",
+				"request": "launch",
+				"type": "cortex-debug",
+				"runToEntryPoint": "main",
+				"executable": "${command:cmake.launchTargetPath}",
+				"gdbPath" : "arm-none-eabi-gdb",
+				"showDevDebugOutput": "none",
+				"servertype": "openocd",
+				"configFiles": [
+					"interface/stlink-dap.cfg",
+					"target/stm32f4x.cfg"
+				], 
+				"device": "STM32F411CEU6",
+				"svdFile": "SVD/STM32F411.svd"
+			}
+		]
+	},
+	"settings": {
+		"files.associations": {
+			"stm32f4xx.h": "c",
+			"stm32f411xe.h": "c",
+			"cstdint": "c"
+		}
+	}
+}

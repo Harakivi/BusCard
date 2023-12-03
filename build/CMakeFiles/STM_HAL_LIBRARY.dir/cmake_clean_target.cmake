@@ -1,0 +1,3 @@
+file(REMOVE_RECURSE
+  "libSTM_HAL_LIBRARY.a"
+)

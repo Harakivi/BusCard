@@ -1,0 +1,196 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "libSTM_USB_LIBRARY.a"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"target_link_libraries",
+			"target_include_directories"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 75,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 83,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 77,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fdata-sections -ffunction-sections -Wall -pedantic -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fdata-sections -ffunction-sections -Wall -pedantic -g3 -Og -DDEBUG"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "HSE_VALUE=25000000"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "LSE_VALUE=32768"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "STM32F411xE"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 3,
+					"path" : "/home/harakivi/GIT/BusCard/Drivers/STM32_USB/Class/MSC/Inc"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/harakivi/GIT/BusCard/Drivers/STM32_USB/Core/Inc"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/harakivi/GIT/BusCard/Include/usb_dev"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/harakivi/GIT/BusCard/Drivers/STM_HAL/Inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/harakivi/GIT/BusCard/Include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/harakivi/GIT/BusCard/Drivers/CMSIS/Include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/harakivi/GIT/BusCard/Drivers/CMSIS/Device/ST/STM32F4xx/Include"
+				}
+			],
+			"language" : "C",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "STM_HAL_LIBRARY::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "CMSIS_LIBRARY::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "STM_USB_LIBRARY::@6890427a1f51a3e7e1df",
+	"name" : "STM_USB_LIBRARY",
+	"nameOnDisk" : "libSTM_USB_LIBRARY.a",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Drivers/STM32_USB/Class/MSC/Src/usbd_msc.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Drivers/STM32_USB/Class/MSC/Src/usbd_msc_bot.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Drivers/STM32_USB/Class/MSC/Src/usbd_msc_data.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Drivers/STM32_USB/Class/MSC/Src/usbd_msc_scsi.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Drivers/STM32_USB/Core/Src/usbd_core.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Drivers/STM32_USB/Core/Src/usbd_ctlreq.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Drivers/STM32_USB/Core/Src/usbd_ioreq.c",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}
