@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.20)
 project(BusCard LANGUAGES C CXX ASM)
 
+#======================================================#
+#                   Version.h                          #
+#======================================================#
+if(NOT DEFINED GITHUB_RUN_NUMBER)
+    set(GITHUB_RUN_NUMBER 0)
+endif()
+
+set(PROJECT_VERSION 0.0.1.${GITHUB_RUN_NUMBER})
+
+string(TIMESTAMP DATE "%d.%m.%y")
+message("Build version = ${PROJECT_VERSION}\r\nBuild date = ${DATE}")
+
 set(ST_DEVICE STM32F411xE)
 
 set(HSE_VALUE 25000000)
@@ -99,6 +111,10 @@ file(GLOB SOURCES
 
 add_executable(${TARGET} main.cpp ${SOURCES})
 
+target_compile_definitions(${TARGET} PUBLIC
+                            -DVERSION="${PROJECT_VERSION}"
+                            -DDATE="${DATE}")
+
 target_link_libraries(${TARGET} CMSIS_LIBRARY STM_HAL_LIBRARY STM_USB_LIBRARY)
 
 target_include_directories(${TARGET} PUBLIC STM_USB_INCLUDE_DIR STM_HAL_LIBRARY_INCLUDE_DIR CMSIS_LIBRARY_INCLUDE_DIR)
@@ -108,3 +124,7 @@ target_link_options(${TARGET} PUBLIC
                         -Wl,-Map=${PROJECT_NAME}.map
                         -Wl,--defsym,_Stack_Size=0x400
                         -Wl,--defsym,_Heap_Size=0x200)
+
+add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_OBJCOPY} ARGS -O binary ${TARGET} ${PROJECT_NAME}.bin)
+
+install(FILES build/${PROJECT_NAME}.bin DESTINATION ./ RENAME ${PROJECT_NAME}_${PROJECT_VERSION}.bin)

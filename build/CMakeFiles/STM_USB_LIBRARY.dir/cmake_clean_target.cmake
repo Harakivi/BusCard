@@ -1,3 +1,0 @@
-file(REMOVE_RECURSE
-  "libSTM_USB_LIBRARY.a"
-)
