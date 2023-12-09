@@ -63,10 +63,8 @@
   */
 
 #define STORAGE_LUN_NBR                  1
-#define STORAGE_BLK_NBR                  0x2
-#define STORAGE_BLK_SIZ                  0x100
-
-unsigned char memory[STORAGE_BLK_SIZ * STORAGE_BLK_NBR];
+#define STORAGE_BLK_NBR                  0x10000
+#define STORAGE_BLK_SIZ                  0x200
 
 /* USER CODE BEGIN PRIVATE_DEFINES */
 
@@ -110,7 +108,7 @@ const uint8_t STORAGE_Inquirydata_FS[] = {/* 36 */
   'H', 'a', 'r', 'a', 'k', 'i', 'v', 'i', /* Manufacturer : 8 bytes */
   'B', 'u', 's', 'C', 'a', 'r', 'd', ' ', /* Product      : 16 Bytes */
   'S', 't', 'o', 'r', 'a', 'g', 'e', ' ',
-  ' ', ' ', ' ' ,' '                      /* Version      : 4 Bytes */
+  '1', '.', '0' ,'0'                      /* Version      : 4 Bytes */
 };
 /* USER CODE END INQUIRY_DATA_FS */
 
@@ -137,7 +135,7 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
   * @}
   */
 
-/** @defgroup USBD_STORAGE_Private_FunctionPrototlunypes
+/** @defgroup USBD_STORAGE_Private_FunctionPrototypes
   * @brief Private functions declaration.
   * @{
   */
@@ -243,13 +241,9 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 {
   /* USER CODE BEGIN 6 */
   UNUSED(lun);
-
-  uint32_t pos = 0;
-
-  while(pos != (blk_len * STORAGE_BLK_SIZ))
-  {
-    *buf++ = memory[(blk_addr * STORAGE_BLK_SIZ) + pos++];
-  }
+  UNUSED(buf);
+  UNUSED(blk_addr);
+  UNUSED(blk_len);
 
   return (USBD_OK);
   /* USER CODE END 6 */
@@ -267,13 +261,9 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 {
   /* USER CODE BEGIN 7 */
   UNUSED(lun);
-
-  uint32_t pos = 0;
-
-  while(pos != (blk_len * STORAGE_BLK_SIZ))
-  {
-    memory[(blk_addr * STORAGE_BLK_SIZ)+ pos++] = *buf++;
-  }
+  UNUSED(buf);
+  UNUSED(blk_addr);
+  UNUSED(blk_len);
 
   return (USBD_OK);
   /* USER CODE END 7 */

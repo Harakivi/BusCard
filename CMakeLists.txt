@@ -80,15 +80,18 @@ get_target_property(STM_HAL_LIBRARY_INCLUDE_DIR STM_HAL_LIBRARY INCLUDE_DIRECTOR
 #############################################################
 
 file(GLOB_RECURSE STM_USB_SRC
+    Drivers/STM32_USB/Class/CompositeBuilder/*.c
     Drivers/STM32_USB/Class/MSC/*.c
+    Drivers/STM32_USB/Class/CDC/*.c
     Drivers/STM32_USB/Core/*.c
 )
 
 add_library(STM_USB_LIBRARY STATIC ${STM_USB_SRC})
 
-target_include_directories(STM_USB_LIBRARY PUBLIC 
+target_include_directories(STM_USB_LIBRARY PUBLIC
+                            Drivers/STM32_USB/Class/CompositeBuilder/Inc
                             Drivers/STM32_USB/Class/MSC/Inc/
-                            Drivers/STM32_USB/Class/MSC/Inc/
+                            Drivers/STM32_USB/Class/CDC/Inc/
                             Drivers/STM32_USB/Core/Inc/
                             Include/usb_dev/)
 
@@ -123,7 +126,7 @@ target_link_options(${TARGET} PUBLIC
                         -T  ${PROJECT_SOURCE_DIR}/STM32F411CEUX_FLASH.ld
                         -Wl,-Map=${PROJECT_NAME}.map
                         -Wl,--defsym,_Stack_Size=0x400
-                        -Wl,--defsym,_Heap_Size=0x200)
+                        -Wl,--defsym,_Heap_Size=0x1000)
 
 add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_OBJCOPY} ARGS -O binary ${TARGET} ${PROJECT_NAME}.bin)
 

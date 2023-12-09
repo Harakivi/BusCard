@@ -62,7 +62,7 @@
   */
 
 /*---------- -----------*/
-#define USBD_MAX_NUM_INTERFACES     1U
+#define USBD_MAX_NUM_INTERFACES     3U
 /*---------- -----------*/
 #define USBD_MAX_NUM_CONFIGURATION     1U
 /*---------- -----------*/
@@ -76,95 +76,114 @@
 /*---------- -----------*/
 #define MSC_MEDIA_PACKET     512U
 
-/****************************************/
-/* #define for FS and HS identification */
-#define DEVICE_FS 		0
-#define DEVICE_HS 		1
+#define USBD_COMPOSITE_USE_IAD 1U
 
-/**
-  * @}
-  */
+#define USBD_MAX_SUPPORTED_CLASS 3U
 
-/** @defgroup USBD_CONF_Exported_Macros USBD_CONF_Exported_Macros
-  * @brief Aliases.
-  * @{
-  */
-/* Memory management macros make sure to use static memory allocation */
-/** Alias for memory allocation. */
+#define USE_USBD_COMPOSITE
 
-#define USBD_malloc         (void *)USBD_static_malloc
+#define USBD_CMPSIT_ACTIVATE_CDC 1U
 
-/** Alias for memory release. */
-#define USBD_free           USBD_static_free
+#define USBD_CMPSIT_ACTIVATE_MSC 1U
 
-/** Alias for memory set. */
-#define USBD_memset         memset
+#define CDC_OUT_EP                              0x02U  /* EP2 for CDC data OUT */
+#define CDC_IN_EP                               0x82U  /* EP2 for CDC data IN */
+#define CDC_CMD_EP                              0x83U  /* EP3 for CDC commands */
+#define MSC_EPOUT_ADDR                          0x01U  /* EP1 for MSC data OUT */
+#define MSC_EPIN_ADDR                           0x81U  /* EP1 for MSC data IN */
 
-/** Alias for memory copy. */
-#define USBD_memcpy         memcpy
+ /****************************************/
+ /* #define for FS and HS identification */
+#define DEVICE_FS 1
+#define DEVICE_HS 0
 
-/** Alias for delay. */
-#define USBD_Delay          HAL_Delay
+   /**
+    * @}
+    */
 
-/* DEBUG macros */
+   /** @defgroup USBD_CONF_Exported_Macros USBD_CONF_Exported_Macros
+    * @brief Aliases.
+    * @{
+    */
+   /* Memory management macros make sure to use static memory allocation */
+   /** Alias for memory allocation. */
+
+#define USBD_malloc (void *)malloc
+
+ /** Alias for memory release. */
+#define USBD_free free
+
+ /** Alias for memory set. */
+#define USBD_memset memset
+
+ /** Alias for memory copy. */
+#define USBD_memcpy memcpy
+
+ /** Alias for delay. */
+#define USBD_Delay HAL_Delay
+
+   /* DEBUG macros */
 
 #if (USBD_DEBUG_LEVEL > 0)
-#define USBD_UsrLog(...)    printf(__VA_ARGS__);\
-                            printf("\n");
+#define USBD_UsrLog(...) \
+   printf(__VA_ARGS__);   \
+   printf("\n");
 #else
 #define USBD_UsrLog(...)
 #endif /* (USBD_DEBUG_LEVEL > 0U) */
 
 #if (USBD_DEBUG_LEVEL > 1)
 
-#define USBD_ErrLog(...)    printf("ERROR: ");\
-                            printf(__VA_ARGS__);\
-                            printf("\n");
+#define USBD_ErrLog(...) \
+   printf("ERROR: ");     \
+   printf(__VA_ARGS__);   \
+   printf("\n");
 #else
 #define USBD_ErrLog(...)
 #endif /* (USBD_DEBUG_LEVEL > 1U) */
 
 #if (USBD_DEBUG_LEVEL > 2)
-#define USBD_DbgLog(...)    printf("DEBUG : ");\
-                            printf(__VA_ARGS__);\
-                            printf("\n");
+#define USBD_DbgLog(...) \
+   printf("DEBUG : ");    \
+   printf(__VA_ARGS__);   \
+   printf("\n");
 #else
 #define USBD_DbgLog(...)
 #endif /* (USBD_DEBUG_LEVEL > 2U) */
 
-/**
-  * @}
-  */
+   /**
+    * @}
+    */
 
-/** @defgroup USBD_CONF_Exported_Types USBD_CONF_Exported_Types
-  * @brief Types.
-  * @{
-  */
+   /** @defgroup USBD_CONF_Exported_Types USBD_CONF_Exported_Types
+    * @brief Types.
+    * @{
+    */
 
-/**
-  * @}
-  */
+   /**
+    * @}
+    */
 
-/** @defgroup USBD_CONF_Exported_FunctionsPrototype USBD_CONF_Exported_FunctionsPrototype
-  * @brief Declaration of public functions for Usb device.
-  * @{
-  */
+   /** @defgroup USBD_CONF_Exported_FunctionsPrototype USBD_CONF_Exported_FunctionsPrototype
+    * @brief Declaration of public functions for Usb device.
+    * @{
+    */
 
-/* Exported functions -------------------------------------------------------*/
-void *USBD_static_malloc(uint32_t size);
-void USBD_static_free(void *p);
+   /* Exported functions -------------------------------------------------------*/
+   void *USBD_static_malloc(uint32_t size);
+   void USBD_static_free(void *p);
 
-/**
-  * @}
-  */
+   /**
+    * @}
+    */
 
-/**
-  * @}
-  */
+   /**
+    * @}
+    */
 
-/**
-  * @}
-  */
+   /**
+    * @}
+    */
 
 #ifdef __cplusplus
 }

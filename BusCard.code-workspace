@@ -22,15 +22,14 @@
 					"target/stm32f4x.cfg"
 				], 
 				"device": "STM32F411CEU6",
-				"svdFile": "SVD/STM32F411.svd"
+				"svdFile": "SVD/STM32F411.svd",
+				"liveWatch": {
+					"enabled": true,
+					"samplesPerSecond": 1
+				}
 			}
 		]
 	},
 	"settings": {
-		"files.associations": {
-			"stm32f4xx.h": "c",
-			"stm32f411xe.h": "c",
-			"cstdint": "c"
-		}
 	}
 }
