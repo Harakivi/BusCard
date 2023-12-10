@@ -109,6 +109,7 @@ set(TARGET ${PROJECT_NAME}.elf)
 
 file(GLOB SOURCES
     Source/*.cpp
+    Source/*.c
     Source/usb_dev/*.c
 )
 

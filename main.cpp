@@ -1,13 +1,19 @@
 #include "Board.hpp"
-#include "usbd_cdc_if.h"
+#include "usbcdc.hpp"
+#include "Cli.hpp"
+
+typedef InternalPeriph::UsbCdc cliUart;
+
+typedef Drivers::Cli Cli;
+Cli cli = Cli(cliUart::Get());
 
 int main()
 {
   BoardInit();
+  cli.Open();
   
   while(true)
   {
-    HAL_Delay(1000);
-    CDC_Transmit_FS((uint8_t *)"Start\r\n", 7);
+    cli.Loop(HAL_GetTick());
   }
 }
