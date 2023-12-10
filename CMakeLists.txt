@@ -106,7 +106,6 @@ get_target_property(STM_USB_INCLUDE_DIR STM_USB_LIBRARY INCLUDE_DIRECTORIES)
 #############################################################
 
 set(FREERTOS_PORT GCC_ARM_CM4F CACHE STRING "")
-set(FREERTOS_HEAP "4" CACHE STRING "" FORCE)
 
 add_library(freertos_config INTERFACE)
 target_include_directories(freertos_config SYSTEM INTERFACE Include) 
@@ -136,12 +135,12 @@ target_compile_definitions(${TARGET} PUBLIC
 
 target_link_libraries(${TARGET} CMSIS_LIBRARY STM_HAL_LIBRARY STM_USB_LIBRARY freertos_kernel freertos_config)
 
-target_include_directories(${TARGET} PUBLIC STM_USB_INCLUDE_DIR STM_HAL_LIBRARY_INCLUDE_DIR CMSIS_LIBRARY_INCLUDE_DIR FREERTOS_INCLUDE_DIR)
+target_include_directories(${TARGET} PUBLIC STM_USB_INCLUDE_DIR STM_HAL_LIBRARY_INCLUDE_DIR CMSIS_LIBRARY_INCLUDE_DIR FREERTOS_INCLUDE_DIR Include Include/usb_dev Include/Tasks)
 
 target_link_options(${TARGET} PUBLIC 
                         -T  ${PROJECT_SOURCE_DIR}/STM32F411CEUX_FLASH.ld
                         -Wl,-Map=${PROJECT_NAME}.map
-                        -Wl,--defsym,_Stack_Size=0x400
+                        -Wl,--defsym,_Stack_Size=0x1000
                         -Wl,--defsym,_Heap_Size=0x1000)
 
 add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_OBJCOPY} ARGS -O binary ${TARGET} ${PROJECT_NAME}.bin)

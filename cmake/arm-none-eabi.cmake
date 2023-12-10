@@ -14,7 +14,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(MCU_FLAGS "-mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fdata-sections -ffunction-sections")
 set(CMAKE_ASM_FLAGS "${MCU_FLAGS} -Wall" CACHE INTERNAL "asm compiler flags")
 set(CMAKE_C_FLAGS "${MCU_FLAGS} -Wall"  CACHE INTERNAL "c compiler flags")
-set(CMAKE_CXX_FLAGS "${MCU_FLAGS} -std=c++17 -Wall" CACHE INTERNAL "cxx compiler flags")
+set(CMAKE_CXX_FLAGS "${MCU_FLAGS} -std=c++20 -Wall" CACHE INTERNAL "cxx compiler flags")
 
 set(CMAKE_ASM_FLAGS_DEBUG "${CMAKE_ASM_FLAGS} -g3 -Og -DDEBUG -pedantic")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -g3 -Og -DDEBUG -pedantic")
