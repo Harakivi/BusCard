@@ -102,6 +102,21 @@ target_link_options(STM_USB_LIBRARY PRIVATE -nostdlib)
 get_target_property(STM_USB_INCLUDE_DIR STM_USB_LIBRARY INCLUDE_DIRECTORIES)
 
 #############################################################
+#                        FreeRTOS                           #
+#############################################################
+
+set(FREERTOS_PORT GCC_ARM_CM4F CACHE STRING "")
+set(FREERTOS_HEAP "4" CACHE STRING "" FORCE)
+
+add_library(freertos_config INTERFACE)
+target_include_directories(freertos_config SYSTEM INTERFACE Include) 
+target_compile_definitions(freertos_config INTERFACE projCOVERAGE_TEST=0)
+
+add_subdirectory(FreeRTOS-Kernel)
+
+get_target_property(FREERTOS_INCLUDE_DIR freertos_kernel INCLUDE_DIRECTORIES)
+
+#############################################################
 #                        BusCardProj                        #
 #############################################################
 
@@ -119,9 +134,9 @@ target_compile_definitions(${TARGET} PUBLIC
                             -DVERSION="${PROJECT_VERSION}"
                             -DDATE="${DATE}")
 
-target_link_libraries(${TARGET} CMSIS_LIBRARY STM_HAL_LIBRARY STM_USB_LIBRARY)
+target_link_libraries(${TARGET} CMSIS_LIBRARY STM_HAL_LIBRARY STM_USB_LIBRARY freertos_kernel freertos_config)
 
-target_include_directories(${TARGET} PUBLIC STM_USB_INCLUDE_DIR STM_HAL_LIBRARY_INCLUDE_DIR CMSIS_LIBRARY_INCLUDE_DIR)
+target_include_directories(${TARGET} PUBLIC STM_USB_INCLUDE_DIR STM_HAL_LIBRARY_INCLUDE_DIR CMSIS_LIBRARY_INCLUDE_DIR FREERTOS_INCLUDE_DIR)
 
 target_link_options(${TARGET} PUBLIC 
                         -T  ${PROJECT_SOURCE_DIR}/STM32F411CEUX_FLASH.ld

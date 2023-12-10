@@ -1,7 +1,6 @@
 #include "usbd_cdc_if.h"
 #include "usbd_composite_builder.h"
 
-static uint8_t TxBufferFS[256];
 static uint8_t RxBufferFS[256];
 static uint16_t RxLen = 0;
 static void (*_onByteReceived)(uint8_t);
@@ -32,11 +31,6 @@ bool CDC_Open(void (*onByteReceived)(uint8_t))
 
 static int8_t CDC_Init_FS(void)
 {
-  uint32_t classId = 0U;
-#ifdef USE_USBD_COMPOSITE
-  classId = USBD_CMPSIT_GetClassID(&hUsbDeviceFS, CLASS_TYPE_CDC, 0);
-#endif
-  USBD_CDC_SetTxBuffer(&hUsbDeviceFS, TxBufferFS, 0, classId);
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, RxBufferFS);
   return (USBD_OK);
 }

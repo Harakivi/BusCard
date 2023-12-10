@@ -57,7 +57,8 @@ namespace InternalPeriph
         {
             if (_opened)
             {
-                CDC_Write(buffer, count);
+                while(!CDC_Write(buffer, count))
+                {}
                 return true;
             }
             return false;
