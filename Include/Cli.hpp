@@ -1,16 +1,15 @@
 #pragma once
-#include "usbcdc.hpp"
+#include "UsbCdc.hpp"
 #include <stdarg.h>
 #include <stdint.h>
 #include "cmd_parser.h"
 
 namespace Drivers
 {
-    class Cli: public InternalPeriph::UartHandler
+    class Cli: public Hardware::UartHandler
     {
     private:
-        Cli(){}
-        InternalPeriph::iUart *_uart;
+        Hardware::iUart& _uart;
         void(*_headerUpdater)();
         uint8_t cli_header[256];
         uint8_t cli_header_len;
@@ -19,7 +18,7 @@ namespace Drivers
         bool needToParse;
         bool needToUpdateCli;
     public:
-        Cli(InternalPeriph::iUart *uart);
+        Cli(Hardware::iUart& uart);
         void Open(uint32_t BaudRate = 115200);
         void Loop(uint32_t time);
         void AddCmd(cmd_t cmd);

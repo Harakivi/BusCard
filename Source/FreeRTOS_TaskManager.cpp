@@ -1,36 +1,49 @@
-#include "TaskManager.hpp"
+#include "Interfaces.hpp"
+#include "FreeRTOS.h"
+#include "task.h"
+
+using namespace Tasks;
 
 void TaskManager::Start()
 {
-    _started = true;
-    vTaskStartScheduler();
+  _started = true;
+  vTaskStartScheduler();
 }
 
-bool TaskManager::AddTask(TaskBase *instance, uint8_t taskPriority)
+bool TaskManager::AddTask(TaskBase &instance, uint8_t taskPriority)
 {
-  TaskHandle_t taskHandle = xTaskCreateStatic(TaskBase::Starter,
-                                              instance->GetName(),
-                                              instance->GetStackSize(),
-                                              instance,
-                                              taskPriority,
-                                              instance->GetTaskStack(),
-                                              instance->GetTaskTCB());
-  if(taskHandle != nullptr)
-  {
-    instance->SetTaskHandle(taskHandle);
-    return true;
-  }
-  return false;
+  StaticTask_t *taskTCB = (StaticTask_t *)instance.GetTaskStack();
+  StackType_t *taskStack = (StackType_t *)(instance.GetTaskStack() + sizeof(StaticTask_t));
+  uint32_t stackDeppth = ((instance.GetStackSize() - sizeof(StaticTask_t))) / sizeof(StackType_t);
+  return xTaskCreateStatic(TaskBase::Starter,
+                           instance.GetName(),
+                           stackDeppth,
+                           &instance,
+                           taskPriority,
+                           taskStack,
+                           taskTCB) != nullptr;
 }
 
 bool TaskManager::IsStarted()
 {
-    return _started;
+  return _started;
 }
 
 void TaskManager::TaskDelay(TickType_t delay)
 {
   vTaskDelay(delay);
+}
+
+extern "C" void xPortSysTickHandler(void);
+
+extern "C" void HAL_IncTick(void);
+
+extern "C" void SysTick_Handler(void)
+{
+  if (Tasks::TaskManager::Get().IsStarted())
+    xPortSysTickHandler();
+
+  HAL_IncTick();
 }
 
 extern "C" void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
@@ -41,7 +54,7 @@ extern "C" void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffe
                                               StackType_t **ppxIdleTaskStackBuffer,
                                               uint32_t *pulIdleTaskStackSize)
 {
-  static const uint32_t _pulIdleTaskStackSize =configMINIMAL_STACK_SIZE;
+  static const uint32_t _pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
   static StaticTask_t _ppxIdleTaskTCB;
   static StackType_t _ppxIdleTaskStack[_pulIdleTaskStackSize];
   *ppxIdleTaskTCBBuffer = &_ppxIdleTaskTCB;

@@ -1,17 +1,15 @@
 #include "Cli.hpp"
-#include "stm32f4xx_hal.h"
 
 using namespace Drivers;
 
-Cli::Cli(InternalPeriph::iUart *uart) : _uart(uart), _headerUpdater(nullptr), cli_header_len(0),
+Cli::Cli(Hardware::iUart& uart) : _uart(uart), _headerUpdater(nullptr), cli_header_len(0),
                                         cli_echo_len(0), needToParse(false), needToUpdateCli(true)
 {
 }
 
 void Cli::Open(uint32_t BaudRate)
 {
-    if (_uart != nullptr)
-        _uart->Open(BaudRate, this);
+    _uart.Open(BaudRate, this);
 }
 
 void Cli::setHeaderUpdater(void (*headerUpdater)())
@@ -42,10 +40,10 @@ void Cli::Loop(uint32_t time)
     {
         // print("\033c");
         print("\r\n");
-        _uart->Write(cli_header, cli_header_len);
+        _uart.Write(cli_header, cli_header_len);
         print("\033[0m");
         print("Shell->");
-        _uart->Write(cli_echo, cli_echo_len);
+        _uart.Write(cli_echo, cli_echo_len);
         needToUpdateCli = false;
     }
     if (errorParse && (time - startErrorTime) > 1000)
@@ -72,7 +70,7 @@ int Cli::print(const char *format, ...)
     char buffer[256];
     writted = vsnprintf(buffer, 256, format, va);
     va_end(va);
-    _uart->Write((uint8_t *)buffer, writted);
+    _uart.Write((uint8_t *)buffer, writted);
     return writted;
 }
 
@@ -108,7 +106,7 @@ void Cli::onByteReceived(uint8_t data)
             {
                 cli_echo[cli_echo_len] = 0;
             }
-            _uart->Write(&data, 1);
+            _uart.Write(&data, 1);
         }
         else if (data == '\r')
         {
@@ -117,7 +115,7 @@ void Cli::onByteReceived(uint8_t data)
         else if (data == 127 && cli_echo_len > 0)
         {
             cli_echo[--cli_echo_len] = 0;
-            _uart->Write((uint8_t *)"\b \b", 3);
+            _uart.Write((uint8_t *)"\b \b", 3);
         }
     }
 }

@@ -1,22 +1,14 @@
+#include "Board.hpp"
 #include "stm32f4xx_hal.h"
 #include "usb_device.h"
 
-extern "C" void Error_Handler(void)
-{
-  __disable_irq();
-  while (1)
-  {
-  }
-}
+using namespace Hardware;
 
-extern "C" void HAL_MspInit(void)
-{
-  __HAL_RCC_SYSCFG_CLK_ENABLE();
-  __HAL_RCC_PWR_CLK_ENABLE();
-}
+bool BusCard::_initied = false;
 
-void SystemClock_Config()
+bool BusCard::RCC_Init()
 {
+  bool res = true;
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
@@ -27,34 +19,36 @@ void SystemClock_Config()
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 15;
-  RCC_OscInitStruct.PLL.PLLN = 144;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
-  RCC_OscInitStruct.PLL.PLLQ = 5;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_OscInitStruct.PLL.PLLM = 25;
+  RCC_OscInitStruct.PLL.PLLN = 192;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 4;
+  res &= HAL_RCC_OscConfig(&RCC_OscInitStruct) == HAL_OK;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
+  res &= HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) == HAL_OK;
+
+  return res;
 }
 
-void BoardInit()
+void BusCard::Init()
 {
-    __HAL_RCC_GPIOH_CLK_ENABLE();
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    SystemClock_Config();
-    SystemCoreClockUpdate();
-    HAL_Init();
-    MX_USB_DEVICE_Init();
+  _initied = true;
+  _initied &= RCC_Init();
+  SystemCoreClockUpdate();
+  _initied &= HAL_Init() == HAL_OK;
+  _initied &= MX_USB_DEVICE_Init();
+}
+
+Drivers::ST7789 BusCard::lcd = Drivers::ST7789(BusCard::DisplaySpi::Get(), BusCard::Lcd_DC_Pin::Get(), BusCard::Lcd_RES_Pin::Get(), BusCard::Lcd_CS_Pin::Get());
+
+extern "C" void HAL_MspInit(void)
+{
+  __HAL_RCC_SYSCFG_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
 }
