@@ -2,31 +2,31 @@
 #include "Spi.hpp"
 #include "UsbCdc.hpp"
 #include "GPIO.hpp"
-#include "ST7789.hpp"
+#include "Interfaces/iSpi.hpp"
+#include "Interfaces/iGpio.hpp"
+#include "Interfaces/iDelayer.hpp"
+#include "Interfaces/iUart.hpp"
+#include "Drivers/ST7789.hpp"
 
 namespace Hardware
 {
     class BusCard
     {
-
     private:
-        static bool _initied;
-
-        static bool RCC_Init();
-
         BusCard() {}
-
-        typedef Spi<1, true> DisplaySpi;
-        typedef Gpio<GpioA, 2> Lcd_DC_Pin;
-        typedef Gpio<GpioA, 3> Lcd_RES_Pin;
-        typedef Gpio<GpioA, 4> Lcd_CS_Pin;
-        typedef Gpio<GpioC, 13> Led_Pin;
+        static bool _initied;
+        static bool RCC_Init();
+        typedef Spi<1, true> LcdSpi;
+        typedef Gpio<GpioA, 2> LcdDcPin;
+        typedef Gpio<GpioA, 3> LcdResPin;
+        typedef Gpio<GpioA, 4> LcdCsPin;
+        typedef Gpio<GpioC, 13> LedPin;
+        typedef UsbCdc CliUartType;
+        typedef typename Drivers::ST7789<BusCard::LcdSpi, BusCard::LcdDcPin, BusCard::LcdResPin, BusCard::LcdCsPin> LcdType;
 
     public:
-        typedef UsbCdc cliUart;
-
-        static Drivers::ST7789 lcd;
-
+        static iUart &cliUart;
+        static Drivers::iLcd &Lcd;
         static void Init();
     };
 }

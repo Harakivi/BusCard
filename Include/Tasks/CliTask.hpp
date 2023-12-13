@@ -1,17 +1,19 @@
 #pragma once
-#include "Interfaces.hpp"
+#include "Interfaces/iTask.hpp"
+#include "TaskManager.hpp"
 #include "Cli.hpp"
+#include <stdint.h>
 
 namespace Tasks
 {
     template <uint32_t StackSize>
-    class CliTask : public TaskBase
+    class CliTask : public iTask
     {
         uint8_t taskStack[StackSize];
         TaskManager& _taskManager;
         Drivers::Cli& _cliInstance;
     public:
-        CliTask(const char* name, Drivers::Cli& cliInstance):TaskBase{name},_taskManager(TaskManager::Get()), _cliInstance(cliInstance){}
+        CliTask(const char* name, Drivers::Cli& cliInstance):iTask{name},_taskManager(TaskManager::Get()), _cliInstance(cliInstance){}
 
         virtual void Task()
         {
@@ -20,7 +22,7 @@ namespace Tasks
             {
                 time++;
                 _cliInstance.Loop(time);
-                _taskManager.TaskDelay(1);
+                _taskManager.Delay(1);
             }
         }
         virtual uint32_t GetStackSize()

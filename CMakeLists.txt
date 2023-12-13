@@ -125,6 +125,7 @@ file(GLOB SOURCES
     Source/*.cpp
     Source/*.c
     Source/usb_dev/*.c
+    Source/Drivers/*.cpp
 )
 
 add_executable(${TARGET} main.cpp ${SOURCES})

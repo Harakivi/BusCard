@@ -1,5 +1,5 @@
 #pragma once
-#include "Interfaces.hpp"
+#include "Interfaces/iSpi.hpp"
 #include "Spi.h"
 
 namespace Hardware
