@@ -1,4 +1,5 @@
-#include "Interfaces.hpp"
+#include "iTask.hpp"
+#include "TaskManager.hpp"
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -10,12 +11,12 @@ void TaskManager::Start()
   vTaskStartScheduler();
 }
 
-bool TaskManager::AddTask(TaskBase &instance, uint8_t taskPriority)
+bool TaskManager::AddTask(iTask &instance, uint8_t taskPriority)
 {
   StaticTask_t *taskTCB = (StaticTask_t *)instance.GetTaskStack();
   StackType_t *taskStack = (StackType_t *)(instance.GetTaskStack() + sizeof(StaticTask_t));
   uint32_t stackDeppth = ((instance.GetStackSize() - sizeof(StaticTask_t))) / sizeof(StackType_t);
-  return xTaskCreateStatic(TaskBase::Starter,
+  return xTaskCreateStatic(iTask::Starter,
                            instance.GetName(),
                            stackDeppth,
                            &instance,
@@ -29,7 +30,16 @@ bool TaskManager::IsStarted()
   return _started;
 }
 
-void TaskManager::TaskDelay(TickType_t delay)
+void TaskManager::EnterCriticalSection()
+{
+  portENTER_CRITICAL();
+}
+void TaskManager::ExitCriticalSection()
+{
+  portEXIT_CRITICAL();
+}
+
+void TaskManager::Delay(TickType_t delay)
 {
   vTaskDelay(delay);
 }

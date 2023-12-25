@@ -1,10 +1,24 @@
 #include "Board.hpp"
 #include "stm32f4xx_hal.h"
 #include "usb_device.h"
+#include "iDelayer.hpp"
 
 using namespace Hardware;
 
+class HalDelayer : public Utils::iDelayer
+{
+public:
+  virtual void Delay(uint32_t delay)
+  {
+    HAL_Delay(delay);
+  }
+};
+
 bool BusCard::_initied = false;
+static HalDelayer halDelayer;
+
+iUart &BusCard::cliUart = BusCard::CliUartType::Get();
+Utils::GFX &BusCard::Lcd = BusCard::LcdType::Get();
 
 bool BusCard::RCC_Init()
 {
@@ -42,9 +56,8 @@ void BusCard::Init()
   SystemCoreClockUpdate();
   _initied &= HAL_Init() == HAL_OK;
   _initied &= MX_USB_DEVICE_Init();
+  LcdType::Get().Init(240, 240, halDelayer, Drivers::iLcd::PORTRAIT_MIRROR);
 }
-
-Drivers::ST7789 BusCard::lcd = Drivers::ST7789(BusCard::DisplaySpi::Get(), BusCard::Lcd_DC_Pin::Get(), BusCard::Lcd_RES_Pin::Get(), BusCard::Lcd_CS_Pin::Get());
 
 extern "C" void HAL_MspInit(void)
 {

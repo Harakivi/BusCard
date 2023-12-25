@@ -1,5 +1,5 @@
 #pragma once
-#include "Interfaces.hpp"
+#include "iGpio.hpp"
 #include "GPIO.h"
 
 namespace Hardware
