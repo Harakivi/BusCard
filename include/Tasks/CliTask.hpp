@@ -1,5 +1,5 @@
 #pragma once
-#include "Interfaces/iTask.hpp"
+#include "iTask.hpp"
 #include "TaskManager.hpp"
 #include "Cli.hpp"
 #include <stdint.h>

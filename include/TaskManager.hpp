@@ -1,6 +1,6 @@
 #pragma once
 #include <stdint.h>
-#include "Interfaces/iTask.hpp"
+#include "iTask.hpp"
 
 namespace Tasks
 {

@@ -1,16 +1,17 @@
 #pragma once
 #include <stdint.h>
-#include "Interfaces/iSpi.hpp"
-#include "Interfaces/iGpio.hpp"
-#include "Interfaces/iDelayer.hpp"
-#include "Interfaces/iLcd.hpp"
+#include "iSpi.hpp"
+#include "iGpio.hpp"
+#include "iDelayer.hpp"
+#include "iLcd.hpp"
+#include "Utils/GFXLib.hpp"
 
 namespace Drivers
 {
     using namespace Hardware;
     using namespace Utils;
     template <class LcdSpiType, class DcPinType, class ResPinType, class CsPinType>
-    class ST7789 : public iLcd, public Hardware::SpiHandler
+    class ST7789 : public GFX, public Hardware::SpiHandler
     {
     private:
         enum CommandTable
@@ -248,7 +249,6 @@ namespace Drivers
 
             return res;
         }
-
         virtual uint16_t Width()
         {
             return _width;
@@ -257,12 +257,10 @@ namespace Drivers
         {
             return _height;
         }
-
         inline virtual uint16_t GetColorFromRGB(uint8_t R, uint8_t G, uint8_t B)
         {
             return (((uint16_t)R & 0xF8) << 8) | (((uint16_t)G & 0xFC) << 3) | (((uint16_t)B >> 3));
         }
-
         virtual void SetOrientation(Orientation orientation)
         {
             WriteCommand(MADCTL);
@@ -293,6 +291,74 @@ namespace Drivers
                 return;
             }
             _currentOrientation = orientation;
+        }
+        virtual void DrawPixel(uint16_t x, uint16_t y, uint16_t color)
+        {
+            if ((x < 0) || (x >= _width) ||
+                (y < 0) || (y >= _height))
+                return;
+
+            SetAddressWindow(x, y, x, y);
+            uint8_t data[] = {color >> 8, color & 0xFF};
+            WriteData(data, sizeof(data));
+        }
+        virtual void FillWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
+        {
+            uint16_t tmp;
+            if (x1 > x2)
+            {
+                tmp = x1;
+                x1 = x2;
+                x2 = tmp;
+            }
+            if (y1 > y2)
+            {
+                tmp = y1;
+                y1 = y2;
+                y2 = tmp;
+            }
+            if (x1 > _width - 1 || y1 > _height - 1)
+                return;
+            if (x2 > _width - 1)
+                x2 = _width - 1;
+            if (y2 > _height - 1)
+                y2 = _height - 1;
+
+            uint32_t len = (x2 - x1 + 1) * (y2 - y1 + 1); //количество закрашиваемых пикселей
+
+            SetAddressWindow(x1, y1, x2, y2);
+
+            uint16_t disp_buf[_width];
+
+            color = (color >> 8) | ((color & 0xFF) << 8);
+
+            int count;
+
+            for (count = 0; count < len && count < _width; count++)
+            {
+                disp_buf[count] = color;
+            }
+
+            while (len)
+            {
+                WriteData((uint8_t *)disp_buf, len > count ? count * 2: len * 2);
+                len -= count;
+                while (_spi.IsBusy())
+                {
+                }
+            }
+        }
+        virtual void DrawImage(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t *data)
+        {
+            if ((x >= _width) || (y >= _height))
+                return;
+            if ((x + width - 1) >= _width)
+                return;
+            if ((y + height - 1) >= _height)
+                return;
+
+            SetAddressWindow(x, y, x + width - 1, y + height - 1);
+            WriteData(data, sizeof(uint16_t) * width * height);
         }
         virtual void FillColor(uint16_t color)
         {
@@ -367,6 +433,10 @@ namespace Drivers
         virtual void SetFont(const FontType &font)
         {
             _currentFont = (FontType *)&font;
+        }
+        virtual bool InterfaceBusy()
+        {
+            return _spi.IsBusy();
         }
     };
 }

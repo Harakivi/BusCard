@@ -2,8 +2,8 @@
 
 using namespace Drivers;
 
-Cli::Cli(Hardware::iUart& uart) : _uart(uart), _headerUpdater(nullptr), cli_header_len(0),
-                                        cli_echo_len(0), needToParse(false), needToUpdateCli(true)
+Cli::Cli(Hardware::iUart &uart) : _uart(uart), _headerUpdater(nullptr), cli_header_len(0),
+                                  cli_echo_len(0), needToParse(false), needToUpdateCli(true), _byteHandle(nullptr)
 {
 }
 
@@ -96,26 +96,34 @@ void Cli::clearHeader()
     cli_header_len = 0;
 }
 
+void Cli::setByteHandle(void (*byteHandle)(uint8_t data))
+{
+    _byteHandle = byteHandle;
+}
+
 void Cli::onByteReceived(uint8_t data)
 {
+    if (_byteHandle)
     {
-        if (data != '\n' && data != '\r' && data != 127)
+        _byteHandle(data);
+        return;
+    }
+    if (data != '\n' && data != '\r' && data != 127)
+    {
+        cli_echo[cli_echo_len++] = data;
+        if (cli_echo_len < 99)
         {
-            cli_echo[cli_echo_len++] = data;
-            if (cli_echo_len < 99)
-            {
-                cli_echo[cli_echo_len] = 0;
-            }
-            _uart.Write(&data, 1);
+            cli_echo[cli_echo_len] = 0;
         }
-        else if (data == '\r')
-        {
-            needToParse = true;
-        }
-        else if (data == 127 && cli_echo_len > 0)
-        {
-            cli_echo[--cli_echo_len] = 0;
-            _uart.Write((uint8_t *)"\b \b", 3);
-        }
+        _uart.Write(&data, 1);
+    }
+    else if (data == '\r')
+    {
+        needToParse = true;
+    }
+    else if (data == 127 && cli_echo_len > 0)
+    {
+        cli_echo[--cli_echo_len] = 0;
+        _uart.Write((uint8_t *)"\b \b", 3);
     }
 }

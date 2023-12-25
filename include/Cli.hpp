@@ -17,6 +17,7 @@ namespace Drivers
         uint8_t cli_echo_len;
         bool needToParse;
         bool needToUpdateCli;
+        void (*_byteHandle)(uint8_t data);
     public:
         Cli(Hardware::iUart& uart);
         void Open(uint32_t BaudRate = 115200);
@@ -27,6 +28,7 @@ namespace Drivers
         int printHeader(const char *format, ...);
         void clear();
         void clearHeader();
+        void setByteHandle(void (*byteHandle)(uint8_t data));
         void onByteReceived(uint8_t data);
     };
 }

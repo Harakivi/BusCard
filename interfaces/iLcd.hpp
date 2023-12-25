@@ -53,9 +53,13 @@ namespace Drivers
         virtual uint16_t Height() = 0;
         virtual uint16_t GetColorFromRGB(uint8_t R, uint8_t G, uint8_t B) = 0;
         virtual void SetOrientation(Orientation orientation) = 0;
+        virtual void DrawPixel(uint16_t x, uint16_t y, uint16_t color) = 0;
+        virtual void FillWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) = 0;
+        virtual void DrawImage(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t *data) = 0;
         virtual void FillColor(uint16_t color) = 0;
         virtual void WriteChar(char ch, uint16_t x, uint16_t y, uint16_t color, uint16_t bgcolor) = 0;
         virtual void WriteString(const char *str, uint16_t x, uint16_t y, uint16_t color, uint16_t bgcolor) = 0;
         virtual void SetFont(const FontType &font) = 0;
+        virtual bool InterfaceBusy() = 0;
     };
 }

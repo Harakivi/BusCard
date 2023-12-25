@@ -2,11 +2,12 @@
 #include "Spi.hpp"
 #include "UsbCdc.hpp"
 #include "GPIO.hpp"
-#include "Interfaces/iSpi.hpp"
-#include "Interfaces/iGpio.hpp"
-#include "Interfaces/iDelayer.hpp"
-#include "Interfaces/iUart.hpp"
+#include "iSpi.hpp"
+#include "iGpio.hpp"
+#include "iDelayer.hpp"
+#include "iUart.hpp"
 #include "Drivers/ST7789.hpp"
+#include "Utils/GFXLib.hpp"
 
 namespace Hardware
 {
@@ -26,7 +27,7 @@ namespace Hardware
 
     public:
         static iUart &cliUart;
-        static Drivers::iLcd &Lcd;
+        static Utils::GFX &Lcd;
         static void Init();
     };
 }

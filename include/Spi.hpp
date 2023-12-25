@@ -1,5 +1,5 @@
 #pragma once
-#include "Interfaces/iSpi.hpp"
+#include "iSpi.hpp"
 #include "Spi.h"
 
 namespace Hardware
@@ -35,7 +35,7 @@ namespace Hardware
             return false;
         }
 
-        virtual void Write(uint8_t *buff, uint16_t size)
+        virtual void Write(uint8_t *buff, uint32_t size)
         {
             _busy = true;
             if constexpr (spi == 1)
@@ -47,7 +47,7 @@ namespace Hardware
             }
         }
 
-        virtual bool IsBusy()
+        virtual volatile bool IsBusy()
         {
             return _busy;
         }

@@ -13,7 +13,7 @@ bool Spi1Init(void (*onTransferComplete)())
     hspi1.Init.Mode = SPI_MODE_MASTER;
     hspi1.Init.Direction = SPI_DIRECTION_2LINES;
     hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
-    hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+    hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
     hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
     hspi1.Init.NSS = SPI_NSS_SOFT;
     hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
@@ -40,7 +40,7 @@ bool Spi1DmaInit(void (*onTransferComplete)())
     hdma_spi1_tx.Init.PeriphInc = DMA_PINC_DISABLE;
     hdma_spi1_tx.Init.MemInc = DMA_MINC_ENABLE;
     hdma_spi1_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-    hdma_spi1_tx.Init.MemDataAlignment = DMA_PDATAALIGN_BYTE;
+    hdma_spi1_tx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
     hdma_spi1_tx.Init.Mode = DMA_NORMAL;
     hdma_spi1_tx.Init.Priority = DMA_PRIORITY_LOW;
     hdma_spi1_tx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
@@ -49,17 +49,31 @@ bool Spi1DmaInit(void (*onTransferComplete)())
     return res;
 }
 
-void Spi1Write(uint8_t* buff, uint16_t size)
+void Spi1Write(uint8_t *buff, uint32_t size)
 {
+    while (size > UINT16_MAX)
+    {
+        HAL_SPI_Transmit(&hspi1, buff, UINT16_MAX, HAL_MAX_DELAY);
+        size -= UINT16_MAX;
+    }
     HAL_SPI_Transmit(&hspi1, buff, size, HAL_MAX_DELAY);
-    if(OnTransferComplete)
+
+    if (OnTransferComplete)
     {
         OnTransferComplete();
     }
 }
 
-void Spi1WriteDma(uint8_t* buff, uint16_t size)
+void Spi1WriteDma(uint8_t *buff, uint32_t size)
 {
+    while (size > UINT16_MAX)
+    {
+        while (hdma_spi1_tx.State != HAL_DMA_STATE_READY)
+        {
+        }
+        HAL_SPI_Transmit_DMA(&hspi1, buff, UINT16_MAX);
+        size -= UINT16_MAX;
+    }
     HAL_SPI_Transmit_DMA(&hspi1, buff, size);
 }
 
