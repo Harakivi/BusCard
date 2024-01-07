@@ -32,7 +32,7 @@ public:
 
 	NES_EMU(const NesRom *game);
 	virtual void Draw(Utils::GFX &gfx);
-	virtual void Processing(Utils::GFX &gfx)
+	virtual void Processing(Utils::GFX &gfx, Control** activePtr)
 	{
 		Draw(gfx);
 	}

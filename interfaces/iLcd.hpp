@@ -48,6 +48,7 @@ namespace Drivers
             LGray565 = 0XC618,
             LGrayBlue565 = 0XA651,
             LBBlue565 = 0X2B12,
+            Orange565 = 0XFE00,
         };
         virtual uint16_t Width() = 0;
         virtual uint16_t Height() = 0;

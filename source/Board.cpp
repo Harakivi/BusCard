@@ -56,7 +56,7 @@ void BusCard::Init()
   SystemCoreClockUpdate();
   _initied &= HAL_Init() == HAL_OK;
   _initied &= MX_USB_DEVICE_Init();
-  LcdType::Get().Init(240, 240, halDelayer, Drivers::iLcd::PORTRAIT_MIRROR);
+  LcdType::Get().Init(240, 240, halDelayer, Drivers::iLcd::PORTRAIT);
 }
 
 extern "C" void HAL_MspInit(void)

@@ -6,8 +6,7 @@
 #include "CliTask.hpp"
 #include "Gui/Button.hpp"
 #include "BoardButtons.hpp"
-#include "nes.hpp"
-#include "rom.h"
+#include "MainWindow.hpp"
 
 typedef Tasks::CliTask<256 * 4> CliTask;
 typedef Hardware::BusCard Board;
@@ -20,41 +19,17 @@ namespace Tasks
     uint8_t taskStack[StackSize];
     TaskManager &_taskManager;
     Utils::GFX &_lcd;
-    Gui::Button btn1 = Gui::Button("nes_emulator");
-    Gui::Button btn2 = Gui::Button("TestBtn2");
-    Gui::Button btn3 = Gui::Button("TestBtn3");
-    Gui::Button btn4 = Gui::Button("TestBtn4");
-    NES_EMU nes = NES_EMU((NES_EMU::NesRom *)MarioRomFile);
-    Gui::Control *activeControl = &btn1;
+    Gui::MainWindow mainWindow;
+    Gui::Control *activeControl = &mainWindow;
 
   public:
     GuiTask(const char *name, Utils::GFX &lcd) : iTask{name}, _taskManager(TaskManager::Get()), _lcd(lcd) {}
 
     virtual void Task()
     {
-      _lcd.FillColor(_lcd.Black565);
-      btn1.view = Gui::View{0, 0, 150, 20, _lcd.Font_11x18};
-      btn2.view = Gui::View{0, 25, 100, 20, _lcd.Font_11x18};
-      btn3.view = Gui::View{0, 50, 100, 20, _lcd.Font_11x18};
-      btn4.view = Gui::View{0, 75, 100, 20, _lcd.Font_11x18};
-      btn1.navigation.ToDown = &btn2;
-      btn2.navigation.ToDown = &btn3;
-      btn3.navigation.ToDown = &btn4;
-      btn4.navigation.ToDown = &btn1;
-      btn1.navigation.ToUp = &btn4;
-      btn2.navigation.ToUp = &btn1;
-      btn3.navigation.ToUp = &btn2;
-      btn4.navigation.ToUp = &btn3;
-
-      btn1.navigation.Enter = &nes;
-      btn1.navigation.Active = true;
-      btn1.Draw(_lcd);
-      btn2.Draw(_lcd);
-      btn3.Draw(_lcd);
-      btn4.Draw(_lcd);
       for (;;)
       {
-        activeControl->Processing(_lcd);
+        activeControl->Processing(_lcd, &activeControl);
       }
     }
 
@@ -98,7 +73,7 @@ namespace Tasks
           lastButtState = _currButtState;
         }
         _currButtState.data = 0;
-        _taskManager.Delay(50);
+        _taskManager.Delay(100);
       }
     }
     virtual uint32_t GetStackSize()

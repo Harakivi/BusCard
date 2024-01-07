@@ -6,6 +6,13 @@
 
 namespace Gui
 {
+    enum TextAlign
+    {
+        Left = 0,
+        Center,
+        Right,
+    };
+    
     class Control
     {
     public:
@@ -26,7 +33,7 @@ namespace Gui
         virtual void Draw(Utils::GFX &gfx)
         {
         }
-        virtual void Processing(Utils::GFX &gfx)
+        virtual void Processing(Utils::GFX &gfx, Control** activePtr)
         {
         }
         virtual Control &ButtonStateChanged(Drivers::ActiveButtons butt, Utils::GFX &gfx)
