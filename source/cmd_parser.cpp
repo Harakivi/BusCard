@@ -1,7 +1,7 @@
-#include "cmd_parser.h"
+#include "cmd_parser.hpp"
 #include <stdint.h>
 
-cmd_t cmd_list[7] = {0};
+Drivers::cmd_t cmd_list[MAX_CMD] = {0};
 uint8_t cmd_cnt = 0;
 
 uint32_t parseNumber(const char* string)
@@ -19,7 +19,7 @@ uint32_t parseNumber(const char* string)
     return res;
 }
 
-void addCmd(cmd_t cmd)
+void addCmd(Drivers::cmd_t cmd)
 {
     cmd_list[cmd_cnt++] = cmd;
 }

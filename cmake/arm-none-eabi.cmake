@@ -16,9 +16,9 @@ set(CMAKE_ASM_FLAGS "${MCU_FLAGS} -Wall" CACHE INTERNAL "asm compiler flags")
 set(CMAKE_C_FLAGS "${MCU_FLAGS} -Wall"  CACHE INTERNAL "c compiler flags")
 set(CMAKE_CXX_FLAGS "${MCU_FLAGS} -std=c++20 -Wall" CACHE INTERNAL "cxx compiler flags")
 
-set(CMAKE_ASM_FLAGS_DEBUG "${CMAKE_ASM_FLAGS} -g3 -Og -DDEBUG -pedantic")
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -g3 -Og -DDEBUG -pedantic")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g3 -Og -DDEBUG -pedantic")
+set(CMAKE_ASM_FLAGS_DEBUG "${CMAKE_ASM_FLAGS} -g3 -O0 -DDEBUG -pedantic")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -g3 -O0 -DDEBUG -pedantic")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g3 -O0 -DDEBUG -pedantic")
 
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -Ofast")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Ofast")

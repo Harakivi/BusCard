@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 
 file(GLOB NES_EMU_SRC 
-            source/*.c
-            source/*.cpp)
+            source/*.c)
 
-add_library(NES_EMU STATIC ${NES_EMU_SRC})
+add_library(NES_EMU STATIC nes.cpp ${NES_EMU_SRC})
 
 target_include_directories(NES_EMU PRIVATE include/
                                    PUBLIC ./)

@@ -81,8 +81,7 @@ target_link_libraries(${TARGET} INTERFACES_LIB CMSIS STM_HAL STM_USB freertos_ke
 
 target_include_directories(${TARGET} PUBLIC 
                             include 
-                            include/usb_dev 
-                            include/Tasks)
+                            include/usb_dev)
 
 target_link_options(${TARGET} PUBLIC 
                         -T  ${PROJECT_SOURCE_DIR}/STM32F411CEUX_FLASH.ld

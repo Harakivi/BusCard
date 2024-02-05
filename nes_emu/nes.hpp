@@ -2,10 +2,11 @@
 #include <stdint.h>
 #include "iLcd.hpp"
 #include "Gui/Control.hpp"
+#include "Gui/Window.hpp"
 #include "BoardButtons.hpp"
 
 
-class NES_EMU : public Gui::Control
+class NES_EMU : public Gui::Control, public Gui::Window
 {
 private:
 	uint16_t Buffer_scanline1[8 + 256 + 8];
@@ -30,7 +31,7 @@ public:
 		uint8_t data[40960];
 	} NesRom;
 
-	NES_EMU(const NesRom *game);
+	NES_EMU(const NesRom *game, Gui::Window &parentWindow);
 	virtual void Draw(Utils::GFX &gfx);
 	virtual void Processing(Utils::GFX &gfx, Control** activePtr)
 	{
@@ -40,6 +41,10 @@ public:
 	{
 		_joyState = butt;
 		return *this;
+	}
+	virtual void ReDrawChild(Utils::GFX &gfx)
+	{
+		
 	}
 
 private:

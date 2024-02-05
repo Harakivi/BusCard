@@ -40,7 +40,7 @@ namespace Hardware
         {
             if (_opened)
             {
-                while(!CDC_Write(buffer, count))
+                while(CDC_Write(buffer, count))
                 {}
                 return true;
             }

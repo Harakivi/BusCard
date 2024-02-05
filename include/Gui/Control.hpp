@@ -3,6 +3,7 @@
 #include "View.hpp"
 #include "Utils/GFXLib.hpp"
 #include "BoardButtons.hpp"
+#include "Window.hpp"
 
 namespace Gui
 {
@@ -12,7 +13,7 @@ namespace Gui
         Center,
         Right,
     };
-    
+
     class Control
     {
     public:
@@ -29,11 +30,18 @@ namespace Gui
         };
         Navigation navigation;
         View view;
-        Control() : navigation{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, false}, view{0, 0, 0, 0, Utils::GFX::Font_7x10} {}
+        Control() : navigation{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, false}, view{0, 0, 0, 0, Utils::GFX::Font_7x10}, _parentWindow(*(Window *)this) {}
+
+    protected:
+        Window &_parentWindow;
+
+    public:
+        Control(Window &parentWindow) : navigation{nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, false}, view{0, 0, 0, 0, Utils::GFX::Font_7x10}, _parentWindow(parentWindow) {}
+
         virtual void Draw(Utils::GFX &gfx)
         {
         }
-        virtual void Processing(Utils::GFX &gfx, Control** activePtr)
+        virtual void Processing(Utils::GFX &gfx, Control **activePtr)
         {
         }
         virtual Control &ButtonStateChanged(Drivers::ActiveButtons butt, Utils::GFX &gfx)

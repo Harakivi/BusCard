@@ -1,10 +1,31 @@
 #include "Cli.hpp"
+#include "cmd_parser.hpp"
 
 using namespace Drivers;
 
 Cli::Cli(Hardware::iUart &uart) : _uart(uart), _headerUpdater(nullptr), cli_header_len(0),
-                                  cli_echo_len(0), needToParse(false), needToUpdateCli(true), _byteHandle(nullptr)
+                                        cli_echo_len(0), needToParse(false), needToUpdateCli(true)
 {
+    static Drivers::Cli &constCli = *this;
+
+    static auto help = []()
+    {
+        uint8_t listPos = 0;
+        while (cmd_list[listPos].cmdString && listPos < MAX_CMD)
+        {
+            constCli.print("\r\n%s", cmd_list[listPos++].cmdString);
+        }
+    };
+
+    static auto clear = []()
+    {
+        constCli.setHeaderUpdater(nullptr);
+        constCli.clearHeader();
+        constCli.clear();
+    };
+
+    constCli.AddCmd(cmd_t{"clear", NULL, clear, NULL});
+    constCli.AddCmd(cmd_t{"help", NULL, help, NULL});
 }
 
 void Cli::Open(uint32_t BaudRate)
@@ -19,24 +40,20 @@ void Cli::setHeaderUpdater(void (*headerUpdater)())
 
 void Cli::Loop(uint32_t time)
 {
-    static bool errorParse = false;
-    static uint32_t startErrorTime = 0;
     static uint32_t lastHeaderUpdateTime = 0;
     if (needToParse)
     {
-        print("\033[2K\r");
         if (!parseCmd((char *)cli_echo))
         {
-            print("Error \"%s\" not found", (char *)cli_echo);
-            errorParse = true;
-            startErrorTime = time;
+            print("\033[2K\r");
+            print("Error \"%s\" not found, try \"help\"", (char *)cli_echo);
         }
         cli_echo_len = 0;
         cli_echo[cli_echo_len] = 0;
         needToParse = false;
         needToUpdateCli = true;
     }
-    if (needToUpdateCli && !errorParse)
+    if (needToUpdateCli)
     {
         // print("\033c");
         print("\r\n");
@@ -45,10 +62,6 @@ void Cli::Loop(uint32_t time)
         print("Shell->");
         _uart.Write(cli_echo, cli_echo_len);
         needToUpdateCli = false;
-    }
-    if (errorParse && (time - startErrorTime) > 1000)
-    {
-        errorParse = false;
     }
     if (_headerUpdater != nullptr && time - lastHeaderUpdateTime > 1000)
     {

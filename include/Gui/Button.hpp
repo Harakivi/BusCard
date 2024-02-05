@@ -3,7 +3,8 @@
 #include "View.hpp"
 #include "Control.hpp"
 #include "BoardButtons.hpp"
-#include "string.h"
+#include "Window.hpp"
+#include <string.h>
 
 namespace Gui
 {
@@ -17,11 +18,11 @@ namespace Gui
         const char *_text;
         size_t _textLen;
         TextAlign _textAlign;
-        Button() {}
 
     public:
-        Button(const char *text, Colors textColor = Colors::Yellow565, Colors bgColor = Colors::Black565, Colors frameColor = Colors::Brown565)
-            : _textColor(textColor),
+        Button(const char *text, Window &parentWindow, Colors textColor = Colors::Yellow565, Colors bgColor = Colors::Black565, Colors frameColor = Colors::Brown565)
+            : Control(parentWindow),
+              _textColor(textColor),
               _bgColor(bgColor),
               _frameColor(frameColor),
               _activeColor(Colors::Orange565),

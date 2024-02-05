@@ -13,7 +13,7 @@ bool CDC_Open(void (*onByteReceived)(uint8_t));
 
 uint32_t CDC_GetReceived(uint8_t* Buf, uint32_t Len);
 
-uint8_t CDC_Write(uint8_t* Buf, uint16_t Len);
+volatile uint8_t CDC_Write(uint8_t* Buf, uint16_t Len);
 
 #ifdef __cplusplus
 }

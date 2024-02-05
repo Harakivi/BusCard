@@ -20,7 +20,7 @@ USBD_CDC_ItfTypeDef USBD_CDC_Interface_fops_FS =
   CDC_DeInit_FS,
   CDC_Control_FS,
   CDC_Receive_FS,
-  CDC_TransmitCplt_FS
+  NULL
 };
 
 bool CDC_Open(void (*onByteReceived)(uint8_t))
@@ -132,7 +132,7 @@ uint32_t CDC_GetReceived(uint8_t* Buf, uint32_t Len)
   return writted;
 }
 
-uint8_t CDC_Write(uint8_t* Buf, uint16_t Len)
+volatile uint8_t CDC_Write(uint8_t* Buf, uint16_t Len)
 {
   uint32_t classId = 0U;
 #ifdef USE_USBD_COMPOSITE
@@ -143,14 +143,6 @@ uint8_t CDC_Write(uint8_t* Buf, uint16_t Len)
    return USBD_BUSY;
   }
   USBD_CDC_SetTxBuffer(&hUsbDeviceFS, Buf, Len, classId);
-  return USBD_CDC_TransmitPacket(&hUsbDeviceFS, classId);
-}
-
-static int8_t CDC_TransmitCplt_FS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
-{
-  uint8_t result = USBD_OK;
-  UNUSED(Buf);
-  UNUSED(Len);
-  UNUSED(epnum);
-  return result;
+  uint8_t res = USBD_CDC_TransmitPacket(&hUsbDeviceFS, classId);
+  return res;
 }

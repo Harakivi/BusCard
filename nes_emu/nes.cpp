@@ -6,7 +6,7 @@
 Drivers::ActiveButtons *joypadState = 0;
 Drivers::ActiveButtons currJoypadState;
 
-NES_EMU::NES_EMU(const NesRom *game) : _joyState{0}
+NES_EMU::NES_EMU(const NesRom *game, Gui::Window &parentWindow) : Gui::Control(parentWindow), _joyState{0}
 {
     romStorage = *game;
     cpu_initmem(romStorage.data, romStorage.Struct.romnum);

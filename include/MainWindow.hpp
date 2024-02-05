@@ -1,19 +1,20 @@
 #pragma once
 #include <stdint.h>
 #include "Gui/Control.hpp"
+#include "Gui/Window.hpp"
 #include "BoardButtons.hpp"
 #include "nes.hpp"
 #include "../rom.h"
 
 namespace Gui
 {
-    class MainWindow : public Control
+    class MainWindow : public Control, public Window
     {
-        Gui::Button btn1 = Gui::Button("NES emulator");
-        Gui::Button btn2 = Gui::Button("TestBtn2");
-        Gui::Button btn3 = Gui::Button("TestBtn3");
-        Gui::Button btn4 = Gui::Button("TestBtn4");
-        NES_EMU nes = NES_EMU((NES_EMU::NesRom *)MarioRomFile);
+        Gui::Button btn1 = Gui::Button("NES emulator", *this);
+        Gui::Button btn2 = Gui::Button("TestBtn2", *this);
+        Gui::Button btn3 = Gui::Button("TestBtn3", *this);
+        Gui::Button btn4 = Gui::Button("TestBtn4", *this);
+        NES_EMU nes = NES_EMU((NES_EMU::NesRom *)MarioRomFile, *this);
 
     public:
         MainWindow()
@@ -41,12 +42,19 @@ namespace Gui
 
             btn1.navigation.Enter = &nes;
             btn1.navigation.Active = true;
+            ReDrawChild(gfx);
+
+            *activePtr = &btn1;
+        }
+
+        virtual void ReDrawChild(Utils::GFX &gfx)
+        {
             btn1.Draw(gfx);
             btn2.Draw(gfx);
             btn3.Draw(gfx);
             btn4.Draw(gfx);
-            *activePtr = &btn1;
         }
+
         virtual Control &ButtonStateChanged(Drivers::ActiveButtons butt, Utils::GFX &gfx)
         {
         }
