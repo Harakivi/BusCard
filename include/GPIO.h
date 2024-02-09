@@ -14,19 +14,19 @@ extern "C"
     void GPIOE_Init(uint8_t pin, uint8_t mode);
     void GPIOH_Init(uint8_t pin, uint8_t mode);
 
-    bool GPIOA_Get(uint8_t pin);
-    bool GPIOB_Get(uint8_t pin);
-    bool GPIOC_Get(uint8_t pin);
-    bool GPIOD_Get(uint8_t pin);
-    bool GPIOE_Get(uint8_t pin);
-    bool GPIOH_Get(uint8_t pin);
+    inline bool GPIOA_Get(uint8_t pin);
+    inline bool GPIOB_Get(uint8_t pin);
+    inline bool GPIOC_Get(uint8_t pin);
+    inline bool GPIOD_Get(uint8_t pin);
+    inline bool GPIOE_Get(uint8_t pin);
+    inline bool GPIOH_Get(uint8_t pin);
 
-    void GPIOA_Set(uint8_t pin, bool val);
-    void GPIOB_Set(uint8_t pin, bool val);
-    void GPIOC_Set(uint8_t pin, bool val);
-    void GPIOD_Set(uint8_t pin, bool val);
-    void GPIOE_Set(uint8_t pin, bool val);
-    void GPIOH_Set(uint8_t pin, bool val);
+    inline void GPIOA_Set(uint8_t pin, bool val);
+    inline void GPIOB_Set(uint8_t pin, bool val);
+    inline void GPIOC_Set(uint8_t pin, bool val);
+    inline void GPIOD_Set(uint8_t pin, bool val);
+    inline void GPIOE_Set(uint8_t pin, bool val);
+    inline void GPIOH_Set(uint8_t pin, bool val);
     
     void GPIOA_SetPull(uint8_t pin, uint8_t pull);
     void GPIOB_SetPull(uint8_t pin, uint8_t pull);

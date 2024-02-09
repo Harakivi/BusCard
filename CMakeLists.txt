@@ -13,9 +13,9 @@ set(PROJECT_VERSION 0.0.1.${GITHUB_RUN_NUMBER})
 string(TIMESTAMP DATE "%d.%m.%y")
 message("Build version = ${PROJECT_VERSION}\r\nBuild date = ${DATE}")
 
-set(ST_DEVICE STM32F411xE)
+set(ST_DEVICE STM32F446xx)
 
-set(HSE_VALUE 25000000)
+set(HSE_VALUE 24000000)
 set(LSE_VALUE 32768)
 
 #############################################################
@@ -84,7 +84,7 @@ target_include_directories(${TARGET} PUBLIC
                             include/usb_dev)
 
 target_link_options(${TARGET} PUBLIC 
-                        -T  ${PROJECT_SOURCE_DIR}/STM32F411CEUX_FLASH.ld
+                        -T  ${PROJECT_SOURCE_DIR}/STM32F446RETX_FLASH.ld
                         -Wl,-Map=${PROJECT_NAME}.map
                         -Wl,--defsym,_Stack_Size=0x1000
                         -Wl,--defsym,_Heap_Size=0x1000)

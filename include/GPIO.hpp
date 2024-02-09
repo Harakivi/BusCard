@@ -60,7 +60,7 @@ namespace Hardware
             }
             return false;
         }
-        virtual bool GetVal()
+        virtual inline bool GetVal()
         {
             if constexpr (Port == GpioA && Pin < 16)
             {
@@ -88,7 +88,7 @@ namespace Hardware
             }
             return false;
         }
-        virtual void SetVal(bool val)
+        virtual inline void SetVal(bool val)
         {
             if constexpr (Port == GpioA && Pin < 16)
             {

@@ -20,8 +20,8 @@ namespace Hardware
         };
 
         virtual bool Init(GPIO_Modes mode) = 0;
-        virtual bool GetVal() = 0;
-        virtual void SetVal(bool val) = 0;
+        virtual inline bool GetVal() = 0;
+        virtual inline void SetVal(bool val) = 0;
         virtual void SetPull(Pull_Modes pull) = 0;
     };
 }
