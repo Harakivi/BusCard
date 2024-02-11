@@ -20,6 +20,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_storage_if.h"
+#include "fatfs/fatfs.h"
+
 
 /* USER CODE BEGIN INCLUDE */
 
@@ -63,8 +65,6 @@
   */
 
 #define STORAGE_LUN_NBR                  1
-#define STORAGE_BLK_NBR                  0x10000
-#define STORAGE_BLK_SIZ                  0x200
 
 /* USER CODE BEGIN PRIVATE_DEFINES */
 
@@ -177,9 +177,9 @@ USBD_StorageTypeDef USBD_Storage_Interface_fops_FS =
 int8_t STORAGE_Init_FS(uint8_t lun)
 {
   /* USER CODE BEGIN 2 */
- UNUSED(lun);
 
-  return (USBD_OK);
+  return SD_Driver.disk_initialize(lun) != 0;
+
   /* USER CODE END 2 */
 }
 
@@ -193,10 +193,8 @@ int8_t STORAGE_Init_FS(uint8_t lun)
 int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
   /* USER CODE BEGIN 3 */
-  UNUSED(lun);
-
-  *block_num  = STORAGE_BLK_NBR;
-  *block_size = STORAGE_BLK_SIZ;
+  SD_Driver.disk_ioctl(lun,GET_SECTOR_COUNT, block_num);
+  SD_Driver.disk_ioctl(lun,GET_SECTOR_SIZE, block_size);
   return (USBD_OK);
   /* USER CODE END 3 */
 }
@@ -209,9 +207,9 @@ int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_
 int8_t STORAGE_IsReady_FS(uint8_t lun)
 {
   /* USER CODE BEGIN 4 */
-  UNUSED(lun);
 
-  return (USBD_OK);
+  return SD_Driver.disk_status(lun) & STA_NOINIT;
+
   /* USER CODE END 4 */
 }
 
@@ -240,12 +238,9 @@ int8_t STORAGE_IsWriteProtected_FS(uint8_t lun)
 int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 6 */
-  UNUSED(lun);
-  UNUSED(buf);
-  UNUSED(blk_addr);
-  UNUSED(blk_len);
 
-  return (USBD_OK);
+  return SD_Driver.disk_read(lun, buf, blk_addr, blk_len) == RES_OK;
+
   /* USER CODE END 6 */
 }
 
@@ -260,12 +255,9 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 7 */
-  UNUSED(lun);
-  UNUSED(buf);
-  UNUSED(blk_addr);
-  UNUSED(blk_len);
 
-  return (USBD_OK);
+  return SD_Driver.disk_write(lun, buf, blk_addr, blk_len) == RES_OK;
+
   /* USER CODE END 7 */
 }
 

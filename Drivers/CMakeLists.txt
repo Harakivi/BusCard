@@ -64,3 +64,21 @@ target_include_directories(STM_USB INTERFACE
                             STM32_USB/Core/Inc/)
 
 target_link_libraries(STM_USB INTERFACE STM_USB_CONFIG)
+
+#############################################################
+#                         FatFs                             #
+#############################################################
+
+file(GLOB_RECURSE FATFS_SRC
+    FatFs/src/*.c
+    FatFs/src/option/*.c
+)
+
+add_library(FATFS INTERFACE ${FATFS_SRC})
+
+target_link_libraries(FATFS INTERFACE CMSIS STM_HAL)
+
+target_include_directories(FATFS INTERFACE
+                            FatFs/src/)
+
+target_link_libraries(STM_USB INTERFACE FATFS)

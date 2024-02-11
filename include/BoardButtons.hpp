@@ -6,6 +6,7 @@ namespace Drivers
 
     enum ButtonMask
     {
+        None = 0x0,
         A = 0x1,
         B = 0x2,
         Select = 0x4,

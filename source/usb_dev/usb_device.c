@@ -25,9 +25,9 @@ bool MX_USB_DEVICE_Init(void)
   res &= USBD_RegisterClassComposite(&hUsbDeviceFS, &USBD_MSC, CLASS_TYPE_MSC, MSC_EpAdd) == USBD_OK;
 #endif
 
-#if USBD_CMPSIT_ACTIVATE_CDC == 1
-  res &= USBD_RegisterClassComposite(&hUsbDeviceFS, &USBD_CDC, CLASS_TYPE_CDC, CDC_EpAdd) == USBD_OK;
-#endif
+// #if USBD_CMPSIT_ACTIVATE_CDC == 1
+//   res &= USBD_RegisterClassComposite(&hUsbDeviceFS, &USBD_CDC, CLASS_TYPE_CDC, CDC_EpAdd) == USBD_OK;
+// #endif
 
 #if USBD_CMPSIT_ACTIVATE_MSC == 1
   if (USBD_CMPSIT_SetClassID(&hUsbDeviceFS, CLASS_TYPE_MSC, 0) != 0xFF)
@@ -36,12 +36,12 @@ bool MX_USB_DEVICE_Init(void)
   }
 #endif
 
-#if USBD_CMPSIT_ACTIVATE_CDC == 1
-  if (USBD_CMPSIT_SetClassID(&hUsbDeviceFS, CLASS_TYPE_CDC, 0) != 0xFF)
-  {
-    res &= USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_CDC_Interface_fops_FS) == USBD_OK;
-  }
-#endif
+// #if USBD_CMPSIT_ACTIVATE_CDC == 1
+//   if (USBD_CMPSIT_SetClassID(&hUsbDeviceFS, CLASS_TYPE_CDC, 0) != 0xFF)
+//   {
+//     res &= USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_CDC_Interface_fops_FS) == USBD_OK;
+//   }
+// #endif
 
   res &= USBD_Start(&hUsbDeviceFS) == USBD_OK;
 

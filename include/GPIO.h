@@ -7,12 +7,12 @@ extern "C"
 {
 #endif
 
-    void GPIOA_Init(uint8_t pin, uint8_t mode);
-    void GPIOB_Init(uint8_t pin, uint8_t mode);
-    void GPIOC_Init(uint8_t pin, uint8_t mode);
-    void GPIOD_Init(uint8_t pin, uint8_t mode);
-    void GPIOE_Init(uint8_t pin, uint8_t mode);
-    void GPIOH_Init(uint8_t pin, uint8_t mode);
+    void GPIOA_Init(uint8_t pin, uint8_t mode, uint8_t edge);
+    void GPIOB_Init(uint8_t pin, uint8_t mode, uint8_t edge);
+    void GPIOC_Init(uint8_t pin, uint8_t mode, uint8_t edge);
+    void GPIOD_Init(uint8_t pin, uint8_t mode, uint8_t edge);
+    void GPIOE_Init(uint8_t pin, uint8_t mode, uint8_t edge);
+    void GPIOH_Init(uint8_t pin, uint8_t mode, uint8_t edge);
 
     inline bool GPIOA_Get(uint8_t pin);
     inline bool GPIOB_Get(uint8_t pin);
@@ -34,6 +34,8 @@ extern "C"
     void GPIOD_SetPull(uint8_t pin, uint8_t pull);
     void GPIOE_SetPull(uint8_t pin, uint8_t pull);
     void GPIOH_SetPull(uint8_t pin, uint8_t pull);
+
+    void GPIO_SetIrqHandler(void (*_onByteReceived)(), uint16_t pin);
 
 #ifdef __cplusplus
 }

@@ -5,6 +5,7 @@
 #include "BoardButtons.hpp"
 #include <initializer_list>
 #include "Board.hpp"
+#include "iGpio.hpp"
 
 typedef Hardware::BusCard Board;
 
@@ -19,6 +20,50 @@ namespace Tasks
         Drivers::ActiveButtons _currButtState;
         std::initializer_list<Drivers::iButtons *> _buttSubscribers;
 
+        template <Drivers::ButtonMask mask>
+        class Button : public Hardware::GpioHandler
+        {
+            Drivers::ActiveButtons &_buttonState;
+
+        public:
+            Button(Drivers::ActiveButtons &buttonState) : _buttonState(buttonState){};
+            virtual void Handler(bool value)
+            {
+                if constexpr (mask == Drivers::A)
+                {
+                    _buttonState.namedStruct.A = !value;
+                }
+                if constexpr (mask == Drivers::B)
+                {
+                    _buttonState.namedStruct.B = !value;
+                }
+                if constexpr (mask == Drivers::Select)
+                {
+                    _buttonState.namedStruct.Select = !value;
+                }
+                if constexpr (mask == Drivers::Start)
+                {
+                    _buttonState.namedStruct.Start = value;
+                }
+                if constexpr (mask == Drivers::Up)
+                {
+                    _buttonState.namedStruct.Up = !value;
+                }
+                if constexpr (mask == Drivers::Down)
+                {
+                    _buttonState.namedStruct.Down = !value;
+                }
+                if constexpr (mask == Drivers::Left)
+                {
+                    _buttonState.namedStruct.Left = !value;
+                }
+                if constexpr (mask == Drivers::Right)
+                {
+                    _buttonState.namedStruct.Right = !value;
+                }
+            }
+        };
+
     public:
         ButtonTask(const char *name, std::initializer_list<Drivers::iButtons *> buttSubscribers) : iTask{name}, _taskManager(TaskManager::Get()), _buttSubscribers(buttSubscribers) {}
         virtual void Task()
@@ -27,40 +72,39 @@ namespace Tasks
             lastButtState.data = 0;
             _currButtState.data = 0;
 
-            Board::BtnStart::Get().Init(Hardware::iGpio::GPIO_Modes::Input);
-            Board::BtnSelect::Get().Init(Hardware::iGpio::GPIO_Modes::Input);
-            Board::BtnSelect::Get().SetPull(Hardware::iGpio::Pull_Modes::PullUp);
-            Board::BtnUp::Get().Init(Hardware::iGpio::GPIO_Modes::Input);
-            Board::BtnUp::Get().SetPull(Hardware::iGpio::Pull_Modes::PullUp);
-            Board::BtnDown::Get().Init(Hardware::iGpio::GPIO_Modes::Input);
-            Board::BtnDown::Get().SetPull(Hardware::iGpio::Pull_Modes::PullUp);
-            Board::BtnLeft::Get().Init(Hardware::iGpio::GPIO_Modes::Input);
-            Board::BtnLeft::Get().SetPull(Hardware::iGpio::Pull_Modes::PullUp);
-            Board::BtnRight::Get().Init(Hardware::iGpio::GPIO_Modes::Input);
-            Board::BtnRight::Get().SetPull(Hardware::iGpio::Pull_Modes::PullUp);
-            Board::BtnA::Get().Init(Hardware::iGpio::GPIO_Modes::Input);
+            Button<Drivers::A> _A = Button<Drivers::A>(_currButtState);
+            Board::BtnA::Get().Init(Hardware::iGpio::GPIO_Modes::InputInterrupt, &_A, Hardware::iGpio::BothEdges);
             Board::BtnA::Get().SetPull(Hardware::iGpio::Pull_Modes::PullUp);
-            Board::BtnB::Get().Init(Hardware::iGpio::GPIO_Modes::Input);
+
+            Button<Drivers::B> _B = Button<Drivers::B>(_currButtState);
+            Board::BtnB::Get().Init(Hardware::iGpio::GPIO_Modes::InputInterrupt, &_B, Hardware::iGpio::BothEdges);
             Board::BtnB::Get().SetPull(Hardware::iGpio::Pull_Modes::PullUp);
 
-            Hardware::iGpio &_A = Board::BtnA::Get();
-            Hardware::iGpio &_B = Board::BtnB::Get();
-            Hardware::iGpio &_Select = Board::BtnSelect::Get();
-            Hardware::iGpio &_Start = Board::BtnStart::Get();
-            Hardware::iGpio &_Up = Board::BtnUp::Get();
-            Hardware::iGpio &_Down = Board::BtnDown::Get();
-            Hardware::iGpio &_Left = Board::BtnLeft::Get();
-            Hardware::iGpio &_Right = Board::BtnRight::Get();
+            Button<Drivers::Select> _Select = Button<Drivers::Select>(_currButtState);
+            Board::BtnSelect::Get().Init(Hardware::iGpio::GPIO_Modes::InputInterrupt, &_Select, Hardware::iGpio::BothEdges);
+            Board::BtnSelect::Get().SetPull(Hardware::iGpio::Pull_Modes::PullUp);
+            
+            Button<Drivers::Start> _Start = Button<Drivers::Start>(_currButtState);
+            Board::BtnStart::Get().Init(Hardware::iGpio::GPIO_Modes::InputInterrupt, &_Start, Hardware::iGpio::BothEdges);
+
+            Button<Drivers::Up> _Up = Button<Drivers::Up>(_currButtState);
+            Board::BtnUp::Get().Init(Hardware::iGpio::GPIO_Modes::InputInterrupt, &_Up, Hardware::iGpio::BothEdges);
+            Board::BtnUp::Get().SetPull(Hardware::iGpio::Pull_Modes::PullUp);
+
+            Button<Drivers::Down> _Down = Button<Drivers::Down>(_currButtState);
+            Board::BtnDown::Get().Init(Hardware::iGpio::GPIO_Modes::InputInterrupt, &_Down, Hardware::iGpio::BothEdges);
+            Board::BtnDown::Get().SetPull(Hardware::iGpio::Pull_Modes::PullUp);
+
+            Button<Drivers::Left> _Left = Button<Drivers::Left>(_currButtState);
+            Board::BtnLeft::Get().Init(Hardware::iGpio::GPIO_Modes::InputInterrupt, &_Left, Hardware::iGpio::BothEdges);
+            Board::BtnLeft::Get().SetPull(Hardware::iGpio::Pull_Modes::PullUp);
+
+            Button<Drivers::Right> _Right = Button<Drivers::Right>(_currButtState);
+            Board::BtnRight::Get().Init(Hardware::iGpio::GPIO_Modes::InputInterrupt, &_Right, Hardware::iGpio::BothEdges);
+            Board::BtnRight::Get().SetPull(Hardware::iGpio::Pull_Modes::PullUp);
+
             for (;;)
             {
-                _currButtState.namedStruct.A = !_A.GetVal();
-                _currButtState.namedStruct.B = !_B.GetVal();
-                _currButtState.namedStruct.Select = !_Select.GetVal();
-                _currButtState.namedStruct.Start = _Start.GetVal();
-                _currButtState.namedStruct.Up = !_Up.GetVal();
-                _currButtState.namedStruct.Down = !_Down.GetVal();
-                _currButtState.namedStruct.Left = !_Left.GetVal();
-                _currButtState.namedStruct.Right = !_Right.GetVal();
                 if (_currButtState.data != lastButtState.data)
                 {
                     for (auto buttSubscriber : _buttSubscribers)
@@ -70,7 +114,7 @@ namespace Tasks
 
                     lastButtState = _currButtState;
                 }
-                _taskManager.Delay(100);
+                _taskManager.Delay(50);
             }
         }
         virtual uint32_t GetStackSize()

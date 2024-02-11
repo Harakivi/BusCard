@@ -53,10 +53,11 @@ add_subdirectory(FreeRTOS-Kernel)
 
 get_target_property(CMSIS_SOURCES CMSIS SOURCES)
 get_target_property(STM_USB_SOURCES STM_USB SOURCES)
+get_target_property(FATFS_SOURCES FATFS SOURCES)
 
 add_subdirectory(interfaces)
 add_subdirectory(nes_emu)
-target_link_libraries(NES_EMU INTERFACES_LIB)
+target_link_libraries(NES_EMU INTERFACES_LIB FATFS)
 target_include_directories(NES_EMU PRIVATE 
                                     include
                                     include/Gui
@@ -68,20 +69,20 @@ file(GLOB SOURCES
     source/*.cpp
     source/*.c
     source/usb_dev/*.c
+    source/fatfs/*.c
     source/Drivers/*.cpp
 )
 
-add_executable(${TARGET} main.cpp ${SOURCES} ${CMSIS_SOURCES} ${STM_USB_SOURCES})
+add_executable(${TARGET} main.cpp ${SOURCES} ${CMSIS_SOURCES} ${STM_USB_SOURCES} ${FATFS_SOURCES})
 
 target_compile_definitions(${TARGET} PUBLIC
                             -DVERSION="${PROJECT_VERSION}"
                             -DDATE="${DATE}")
 
-target_link_libraries(${TARGET} INTERFACES_LIB CMSIS STM_HAL STM_USB freertos_kernel NES_EMU)
+target_link_libraries(${TARGET} INTERFACES_LIB CMSIS STM_HAL STM_USB FATFS freertos_kernel NES_EMU)
 
 target_include_directories(${TARGET} PUBLIC 
-                            include 
-                            include/usb_dev)
+                            include)
 
 target_link_options(${TARGET} PUBLIC 
                         -T  ${PROJECT_SOURCE_DIR}/STM32F446RETX_FLASH.ld

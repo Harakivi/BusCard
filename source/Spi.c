@@ -31,10 +31,10 @@ bool Spi1DmaInit(void (*onTransferComplete)())
     bool res = true;
     __HAL_RCC_DMA2_CLK_ENABLE();
 
-    HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
+    HAL_NVIC_SetPriority(DMA2_Stream5_IRQn, 15, 0);
+    HAL_NVIC_EnableIRQ(DMA2_Stream5_IRQn);
 
-    hdma_spi1_tx.Instance = DMA2_Stream3;
+    hdma_spi1_tx.Instance = DMA2_Stream5;
     hdma_spi1_tx.Init.Channel = DMA_CHANNEL_3;
     hdma_spi1_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
     hdma_spi1_tx.Init.PeriphInc = DMA_PINC_DISABLE;
@@ -113,7 +113,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
     }
 }
 
-void DMA2_Stream3_IRQHandler(void)
+void DMA2_Stream5_IRQHandler(void)
 {
     HAL_DMA_IRQHandler(&hdma_spi1_tx);
     if (hdma_spi1_tx.State == HAL_DMA_STATE_READY && OnTransferComplete)

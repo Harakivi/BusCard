@@ -1,32 +1,32 @@
 #pragma once
 #include <stdint.h>
+#include <iLcd.hpp>
 #include "View.hpp"
 #include "Control.hpp"
-#include "BoardButtons.hpp"
 #include <string.h>
 
 namespace Gui
 {
-    class Button : public Control
+    class Text : public Control
     {
         typedef Utils::GFX::RGB565Colors Colors;
         Colors _textColor;
         Colors _bgColor;
         Colors _frameColor;
-        Colors _activeColor;
         const char *_text;
         size_t _textLen;
         TextAlign _textAlign;
+        Navigation navigation;
 
     public:
-        Button(const char *text, Control &parentControl, Colors textColor = Colors::Yellow565, Colors bgColor = Colors::Black565, Colors frameColor = Colors::Brown565)
+        Text(const char *text, Control &parentControl, Colors textColor = Colors::White565, Colors bgColor = Colors::Black565, Colors frameColor = Colors::Black565)
             : Control(parentControl),
               _textColor(textColor),
               _bgColor(bgColor),
               _frameColor(frameColor),
-              _activeColor(Colors::Orange565),
               _text(text),
-              _textAlign(TextAlign::Left)
+              _textAlign(TextAlign::Left),
+              navigation{0}
         {
             _textLen = strlen(_text);
         }
@@ -60,16 +60,11 @@ namespace Gui
             }
 
             gfx.WriteString(_text, textPos, view.yPos + 2, _textColor, _bgColor);
-            if (!navigation.Active)
-            {
-                gfx.DrawRectangle(view.xPos, view.yPos, view.xPos + view.width, view.yPos + view.height, _frameColor);
-                gfx.DrawRectangle(view.xPos + 1, view.yPos + 1, (view.xPos + view.width) - 1, (view.yPos + view.height) - 1, _frameColor);
-            }
-            else
-            {
-                gfx.DrawRectangle(view.xPos, view.yPos, view.xPos + view.width, view.yPos + view.height, _activeColor);
-                gfx.DrawRectangle(view.xPos + 1, view.yPos + 1, (view.xPos + view.width) - 1, (view.yPos + view.height) - 1, _activeColor);
-            }
+            gfx.DrawRectangle(view.xPos, view.yPos, view.xPos + view.width, view.yPos + view.height, _frameColor);
+            gfx.DrawRectangle(view.xPos + 1, view.yPos + 1, (view.xPos + view.width) - 1, (view.yPos + view.height) - 1, _frameColor);
+        }
+        virtual Control &ButtonStateChanged(Drivers::ActiveButtons butt, Utils::GFX &gfx)
+        {
         }
     };
 }

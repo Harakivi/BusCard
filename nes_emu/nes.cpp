@@ -1,14 +1,38 @@
 #include "nes.hpp"
 #include "cpu.h"
 #include "ppu.h"
+#include "fatfs/fatfs.h"
 #include <stdbool.h>
+
+#define Constant_NES_Expected 0x4E45531A
 
 Drivers::ActiveButtons *joypadState = 0;
 Drivers::ActiveButtons currJoypadState;
 
-NES_EMU::NES_EMU(const NesRom *game, Gui::Window &parentWindow) : Gui::Control(parentWindow), _joyState{0}
+NES_EMU::NES_EMU(Gui::Control &parentControl) : Gui::Control(parentControl), _joyState{0}
 {
-    romStorage = *game;
+}
+
+void NES_EMU::Init()
+{
+    FATFS FatFs;  // Fatfs handle
+    FIL fp;      // File handle
+
+    f_mount(&FatFs, "", 1); // 1=mount now
+
+    f_open(
+        &fp,
+        fileManager.GetSelectedName(),
+        FA_READ);
+
+    UINT readed;
+
+    f_read(&fp, &romStorage, f_size(&fp) - 3, &readed);
+
+    f_close(&fp);
+
+    _romLoaded = readed == f_size(&fp) - 3;
+
     cpu_initmem(romStorage.data, romStorage.Struct.romnum);
     cpu_reset();
     ppu_init(&romStorage.data[romStorage.Struct.romnum * 0x4000], (romStorage.Struct.romfeature & 0x01));
@@ -18,66 +42,69 @@ NES_EMU::NES_EMU(const NesRom *game, Gui::Window &parentWindow) : Gui::Control(p
 
 void NES_EMU::Draw(Utils::GFX &gfx)
 {
-    uint8_t cycles = 0;
-    while (cycles < 2)
+    if (fileManager.GetSelectedName())
     {
-        SpriteHitFlag = false;
-        for (PPU_scanline = 0; PPU_scanline < 21; PPU_scanline++)
+        uint8_t cycles = 0;
+        while (cycles < 2)
         {
-            cpu_exec(CLOCKS_PER_SCANLINE);
-        }
-
-        PPU_Reg.R2 &= ~R2_SPR0_HIT;
-
-        /* scanline: 21~261*/
-        for (; PPU_scanline < SCAN_LINE_DISPLAY_END_NUM; PPU_scanline++)
-        {
-            if ((SpriteHitFlag == true) && ((PPU_Reg.R2 & R2_SPR0_HIT) == 0))
-            {
-                int clocks = (sprite[0].x * CLOCKS_PER_SCANLINE) / NES_DISP_WIDTH;
-                cpu_exec(clocks);
-
-                PPU_Reg.R2 |= R2_SPR0_HIT;
-
-                cpu_exec(CLOCKS_PER_SCANLINE - clocks);
-            }
-            else
+            SpriteHitFlag = false;
+            for (PPU_scanline = 0; PPU_scanline < 21; PPU_scanline++)
             {
                 cpu_exec(CLOCKS_PER_SCANLINE);
             }
 
-            if (PPU_Reg.R1 & (R1_BG_VISIBLE | R1_SPR_VISIBLE))
-            {
-                if (SpriteHitFlag == false)
-                    ppu_spr0_hit_flag(PPU_scanline - SCAN_LINE_DISPLAY_START_NUM);
-            }
+            PPU_Reg.R2 &= ~R2_SPR0_HIT;
 
-            if (cycles)
+            /* scanline: 21~261*/
+            for (; PPU_scanline < SCAN_LINE_DISPLAY_END_NUM; PPU_scanline++)
             {
-                ppu_render_line(currentBuffer, PPU_scanline - SCAN_LINE_DISPLAY_START_NUM);
-
-                gfx.DrawImage(0, PPU_scanline - SCAN_LINE_DISPLAY_START_NUM, 240, 1, (uint8_t *)&currentBuffer[16]);
-                if (currentBufferNum == 0)
+                if ((SpriteHitFlag == true) && ((PPU_Reg.R2 & R2_SPR0_HIT) == 0))
                 {
-                    currentBuffer = Buffer_scanline2;
-                    currentBufferNum = 1;
+                    int clocks = (sprite[0].x * CLOCKS_PER_SCANLINE) / NES_DISP_WIDTH;
+                    cpu_exec(clocks);
+
+                    PPU_Reg.R2 |= R2_SPR0_HIT;
+
+                    cpu_exec(CLOCKS_PER_SCANLINE - clocks);
                 }
                 else
                 {
-                    currentBuffer = Buffer_scanline1;
-                    currentBufferNum = 0;
+                    cpu_exec(CLOCKS_PER_SCANLINE);
+                }
+
+                if (PPU_Reg.R1 & (R1_BG_VISIBLE | R1_SPR_VISIBLE))
+                {
+                    if (SpriteHitFlag == false)
+                        ppu_spr0_hit_flag(PPU_scanline - SCAN_LINE_DISPLAY_START_NUM);
+                }
+
+                if (cycles)
+                {
+                    ppu_render_line(currentBuffer, PPU_scanline - SCAN_LINE_DISPLAY_START_NUM);
+
+                    gfx.DrawImage(0, PPU_scanline - SCAN_LINE_DISPLAY_START_NUM, 240, 1, (uint8_t *)&currentBuffer[16]);
+                    if (currentBufferNum == 0)
+                    {
+                        currentBuffer = Buffer_scanline2;
+                        currentBufferNum = 1;
+                    }
+                    else
+                    {
+                        currentBuffer = Buffer_scanline1;
+                        currentBufferNum = 0;
+                    }
                 }
             }
-        }
-        /* scanline: 262*/
-        cpu_exec(CLOCKS_PER_SCANLINE);
+            /* scanline: 262*/
+            cpu_exec(CLOCKS_PER_SCANLINE);
 
-        PPU_Reg.R2 |= R2_VBlank_Flag;
-        if (PPU_Reg.R0 & R0_VB_NMI_EN)
-        {
-            NMI_Flag = SET1;
+            PPU_Reg.R2 |= R2_VBlank_Flag;
+            if (PPU_Reg.R0 & R0_VB_NMI_EN)
+            {
+                NMI_Flag = SET1;
+            }
+            cycles++;
         }
-        cycles++;
     }
 }
 

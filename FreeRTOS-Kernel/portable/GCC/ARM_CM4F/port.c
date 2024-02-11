@@ -388,11 +388,11 @@ BaseType_t xPortStartScheduler( void )
 
     /* Make PendSV and SysTick the lowest priority interrupts. */
     portNVIC_SHPR3_REG |= portNVIC_PENDSV_PRI;
-    portNVIC_SHPR3_REG |= portNVIC_SYSTICK_PRI;
+    //portNVIC_SHPR3_REG |= portNVIC_SYSTICK_PRI;
 
     /* Start the timer that generates the tick ISR.  Interrupts are disabled
      * here already. */
-    vPortSetupTimerInterrupt();
+    //vPortSetupTimerInterrupt();
 
     /* Initialise the critical nesting count ready for the first task. */
     uxCriticalNesting = 0;

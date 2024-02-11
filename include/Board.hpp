@@ -36,6 +36,8 @@ namespace Hardware
         typedef Gpio<GpioA, 3> BtnUp;
         typedef Gpio<GpioB, 9> BtnA;
         typedef Gpio<GpioB, 8> BtnB;
+        typedef Gpio<GpioA, 6> DispBlk;
+        typedef Gpio<GpioC, 5> SdioEn;
         static void Init();
     };
 }

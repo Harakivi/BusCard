@@ -18,7 +18,16 @@ namespace Hardware
     class Gpio : public iGpio
     {
     private:
-        Gpio(){};
+        GpioHandler *_handler;
+
+        static void _gpioHandler()
+        {
+            Gpio *_this = &Gpio::Get();
+            if (_this->_handler != nullptr)
+                _this->_handler->Handler(_this->GetVal());
+        }
+
+        Gpio() : _handler(nullptr){};
 
     public:
         static Gpio &Get()
@@ -26,40 +35,48 @@ namespace Hardware
             static Gpio instance;
             return instance;
         }
-        virtual bool Init(iGpio::GPIO_Modes mode)
+
+        virtual bool Init(iGpio::GPIO_Modes mode, GpioHandler *handler = nullptr, iGpio::Interrupt_Modes edge = None)
         {
+            bool res = false;
             if constexpr (Port == GpioA && Pin < 16)
             {
-                GPIOA_Init(Pin, mode);
-                return true;
+                GPIOA_Init(Pin, mode, edge);
+                res = true;
             }
             if constexpr (Port == GpioB && Pin < 16)
             {
-                GPIOB_Init(Pin, mode);
-                return true;
+                GPIOB_Init(Pin, mode, edge);
+                res = true;
             }
             if constexpr (Port == GpioC && Pin < 16)
             {
-                GPIOC_Init(Pin, mode);
-                return true;
+                GPIOC_Init(Pin, mode, edge);
+                res = true;
             }
             if constexpr (Port == GpioD && Pin < 16)
             {
-                GPIOD_Init(Pin, mode);
-                return true;
+                GPIOD_Init(Pin, mode, edge);
+                res = true;
             }
             if constexpr (Port == GpioE && Pin < 16)
             {
-                GPIOE_Init(Pin, mode);
-                return true;
+                GPIOE_Init(Pin, mode, edge);
+                res = true;
             }
             if constexpr (Port == GpioH && Pin < 16)
             {
-                GPIOH_Init(Pin, mode);
-                return true;
+                GPIOH_Init(Pin, mode, edge);
+                res = true;
             }
-            return false;
+            _handler = handler;
+            if (_handler)
+            {
+                GPIO_SetIrqHandler(_gpioHandler, Pin);
+            }
+            return res;
         }
+
         virtual inline bool GetVal()
         {
             if constexpr (Port == GpioA && Pin < 16)
